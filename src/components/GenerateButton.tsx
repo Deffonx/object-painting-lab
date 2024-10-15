@@ -16,18 +16,18 @@ const GenerateButton = () => {
       toast.success('Image generated successfully!');
       // Here you would update the OutputImage component with the new image URL
     },
-    onError: (error) => {
-      toast.error('Failed to generate image. Please try again.');
+    onError: (error: Error) => {
+      toast.error(`Failed to generate image: ${error.message}`);
     },
   });
 
   return (
     <Button 
-      onClick={() => mutation.mutate()} 
-      disabled={mutation.isLoading}
+      onClick={() => mutation.mutate()}
+      disabled={mutation.isPending}
       className="w-full"
     >
-      {mutation.isLoading ? 'Generating...' : 'Generate'}
+      {mutation.isPending ? 'Generating...' : 'Generate'}
     </Button>
   );
 };
