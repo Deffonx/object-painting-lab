@@ -1,12 +1,21 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import ImageUploader from '@/components/ImageUploader';
 import ModelSelector from '@/components/ModelSelector';
 import PromptInput from '@/components/PromptInput';
 import GenerateButton from '@/components/GenerateButton';
 import OutputImage from '@/components/OutputImage';
+import KoyebLauncher from '@/components/KoyebLauncher';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 30, // 30 minutes
+    },
+  },
+});
 
 const Index = () => {
   return (
@@ -23,9 +32,11 @@ const Index = () => {
             <PromptInput label="Multi-Layer Prompts" placeholder="Enter multiple prompts, separated by commas (optional)" optional />
             <GenerateButton />
             <OutputImage />
+            <KoyebLauncher />
           </div>
         </div>
       </div>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };
