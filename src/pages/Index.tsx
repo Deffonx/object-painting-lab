@@ -1,13 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ImageUploader from '@/components/ImageUploader';
+import ModelSelector from '@/components/ModelSelector';
+import PromptInput from '@/components/PromptInput';
+import GenerateButton from '@/components/GenerateButton';
+import OutputImage from '@/components/OutputImage';
+
+const queryClient = new QueryClient();
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
+            Object Inpainting Tool
+          </h1>
+          <div className="bg-white shadow-md rounded-lg p-6 space-y-6">
+            <ImageUploader />
+            <ModelSelector />
+            <PromptInput label="Custom Prompt" placeholder="Describe the object you want to modify" />
+            <PromptInput label="Multi-Layer Prompts" placeholder="Enter multiple prompts, separated by commas (optional)" optional />
+            <GenerateButton />
+            <OutputImage />
+          </div>
+        </div>
       </div>
-    </div>
+    </QueryClientProvider>
   );
 };
 
