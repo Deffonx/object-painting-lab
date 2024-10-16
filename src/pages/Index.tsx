@@ -7,6 +7,7 @@ import OutputImage from '@/components/OutputImage';
 import KoyebLauncher from '@/components/KoyebLauncher';
 import GoogleOAuthForm from '@/components/GoogleOAuthForm';
 import HuggingFaceSelector from '@/components/HuggingFaceSelector';
+import { Progress } from "@/components/ui/progress"
 
 interface IndexProps {
   googleClientId: string;
@@ -27,34 +28,31 @@ const Index: React.FC<IndexProps> = ({
 }) => {
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedDataset, setSelectedDataset] = useState('');
+  const [processingProgress, setProcessingProgress] = useState(0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleLoginSuccess = async (credentialResponse: any) => {
     const token = credentialResponse.credential;
-    // Use the token for authentication or pass it to your backend
     console.log('Google OAuth token:', token);
     await triggerTraining(token, selectedModel, selectedDataset);
   };
 
   const triggerTraining = async (token: string, model: string, dataset: string) => {
+    setIsProcessing(true);
+    setProcessingProgress(0);
     try {
-      const response = await fetch('http://localhost:3000/train', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: token,
-          model: model,
-          dataset: dataset,
-        }),
-      });
-
-      const result = await response.json();
-      if (result.status === 'success') {
-        window.open('https://script.google.com/macros/s/your-app-id/exec', '_blank');
+      // Simulating a long-running process
+      for (let i = 0; i <= 100; i += 10) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setProcessingProgress(i);
       }
+      // In a real scenario, you would make an API call here
+      console.log('Training triggered with:', { token, model, dataset });
+      window.open('https://script.google.com/macros/s/your-app-id/exec', '_blank');
     } catch (error) {
       console.error('Error triggering training:', error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -88,6 +86,12 @@ const Index: React.FC<IndexProps> = ({
             />
           </GoogleOAuthProvider>
           <GenerateButton />
+          {isProcessing && (
+            <div className="mt-4">
+              <Progress value={processingProgress} className="w-full" />
+              <p className="text-sm text-gray-600 mt-2">Processing: {processingProgress}%</p>
+            </div>
+          )}
           <OutputImage />
           <KoyebLauncher />
         </div>
